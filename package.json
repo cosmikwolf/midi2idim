@@ -1,0 +1,9 @@
+{
+  "name": "midi2idim",
+  "version": "0.0.1",
+  "description": "the midi 2 inter device interconnect manager",
+  "main": "index.ts",
+  "repository": "git@github.com:cosmikwolf/midi2idim.git",
+  "author": "Tenkai Kariya",
+  "license": "MIT"
+}
