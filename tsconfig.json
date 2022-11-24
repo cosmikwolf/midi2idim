@@ -30,7 +30,8 @@
       "noUnusedParameters": true,
       "importsNotUsedAsValues": "error",
       "checkJs": true,
-      "outDir": "./build"
+      "outDir": "./transpiled"
     },
-    "compileOnSave": true
+    "compileOnSave": true,
+    "include": ["."]
   }
