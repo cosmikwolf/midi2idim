@@ -1,3 +1,4 @@
+
 // from https://github.com/tsconfig/bases/blob/main/bases/node-lts-strictest.combined.json
 // Equivalent to a config of: strictest extends node18
 {
@@ -6,10 +7,12 @@
     "_version": "18.12.1",
     "compilerOptions": {
       "lib": [
-        "es2022"
+        "es2022",
+        "DOM"
       ],
       "module": "commonjs",
       "target": "es2022",
+      "types": ["node", "jest"],
       "strict": true,
       "esModuleInterop": true,
       "skipLibCheck": true,
@@ -26,6 +29,8 @@
       "noUnusedLocals": true,
       "noUnusedParameters": true,
       "importsNotUsedAsValues": "error",
-      "checkJs": true
-    }
+      "checkJs": true,
+      "outDir": "./build"
+    },
+    "compileOnSave": true
   }
