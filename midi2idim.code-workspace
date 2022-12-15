@@ -1,0 +1,23 @@
+{
+	"folders": [
+		{
+			"path": "."
+		},
+		{
+			"path": "../cmidi2"
+		},
+		{
+			"path": "../ts2c"
+		},
+		{
+			"path": "../event-bus-typescript"
+		}
+	],
+	"settings": {
+		"workbench.colorCustomizations": {
+			"activityBar.background": "#2E2F1B",
+			"titleBar.activeBackground": "#414126",
+			"titleBar.activeForeground": "#FBFBF9"
+		}
+	}
+}

@@ -1,7 +1,7 @@
 // requireActual ensures you get the real file
 // instead of an automock
 // we use import type and <typeof ...> to still get types
-import type * as Add from "../addition"
+import type * as Add from "./addition"
 const { addition } = jest.requireActual<typeof Add>("../addition")
 
 describe("addition function", () => {
