@@ -7,8 +7,8 @@
 
 #[no_mangle]
 pub extern "C" fn root() {
-    println!("test");
-    println!("{:?}", MIDI2_CC_ALL_NOTES_OFF);
+    // println!("test");
+    // println!("{:?}", MIDI2_CC_ALL_NOTES_OFF);
 }
 
 pub fn main() {

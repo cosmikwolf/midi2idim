@@ -1,12 +1,8 @@
 // M2-101-UM MIDI Capabilities Inquiry (MIDI-CI)
-
-mod midi_ci;
+#[allow(dead_code)]
+pub mod midi_ci;
 // pub use midi_ci::discovery;
 
-
-pub fn add(left: usize, right: usize) -> usize {
-    left + right
-}
 
 // }
 /*

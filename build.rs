@@ -1,7 +1,6 @@
-extern crate cbindgen;
-
-use cbindgen::Config;
-use std::env;
+// extern crate cbindgen;
+// use cbindgen::Config;
+// use std::env;
 
 // fn main_alt() {
 //     // let crate_dir = env::var("CARGO_MANIFEST_DIR").unwrap();
@@ -19,18 +18,18 @@ use std::env;
 // }
 
 fn main() {
-    let crate_dir = env::var("CARGO_MANIFEST_DIR").unwrap();
+    // let crate_dir = env::var("CARGO_MANIFEST_DIR").unwrap();
     // let build_ffi = env::var("CARGO_GENERATE_FFI").unwrap();
 
     // if build_ffi == "True" {
     //     let output_file = target_dir().join("smartscreen.h").display().to_string();
 
-    let config = Config::from_file("cbindgen.toml").unwrap();
+    // let config = Config::from_file("cbindgen.toml").unwrap();
 
-    cbindgen::generate_with_config(&crate_dir, config)
-        .unwrap()
+    // cbindgen::generate_with_config(&crate_dir, config)
+    //     .unwrap()
         // .write_to_file(&output_file);
-        .write_to_file("built/midi2idim.h");
+        // .write_to_file("built/midi2idim.h");
     // }
 }
 
