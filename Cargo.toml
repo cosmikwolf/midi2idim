@@ -1,18 +1,6 @@
-[package]
-name = "midi2idim"
-version = "0.1.0"
-edition = "2021"
-build = "build.rs"
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+[workspace]
 
-[dependencies]
-bus = "2.3.0"
-rand = "0.8.5"
-bincode = "2.0.0-rc.2"
-nom = "7.1.1"
-
-[build-dependencies]
-cbindgen = "0.24.3"
-cargo-generate = "0.17.4"
-
-
+members = [
+    "midi_ci",
+    "nom-midi-rs",
+]

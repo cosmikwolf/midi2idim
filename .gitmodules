@@ -1,0 +1,6 @@
+[submodule "nom-midi-rs"]
+	path = nom-midi-rs
+	url = git@github.com:cosmikwolf/nom-midi-rs.git
+[submodule "midir"]
+	path = midir
+	url = git@github.com:Boddlnagg/midir.git
