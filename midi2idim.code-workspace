@@ -2,15 +2,6 @@
 	"folders": [
 		{
 			"path": "."
-		},
-		{
-			"path": "../cmidi2"
-		},
-		{
-			"path": "../ts2c"
-		},
-		{
-			"path": "../event-bus-typescript"
 		}
 	],
 	"settings": {
@@ -18,6 +9,15 @@
 			"activityBar.background": "#2E2F1B",
 			"titleBar.activeBackground": "#414126",
 			"titleBar.activeForeground": "#FBFBF9"
-		}
+		},
+		"cSpell.words": [
+			"Bytesin",
+			"cbindgen",
+			"CMIDI",
+			"idim",
+			"LAMESPEC",
+			"pnacc",
+			"pnrcc"
+		]
 	}
 }
