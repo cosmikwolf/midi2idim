@@ -1,12 +1,15 @@
+pub mod parser;
 pub mod decode;
 // use hex_string_decode;
-use crate::midi_ci::constants_definitions::midi_ci_msg::*;
+use crate::midi_ci::defs::midi_ci_msg::*;
 use bincode::{Decode, Encode, config};
 use rand::{thread_rng, Rng};
-pub mod constants_definitions;
+pub mod defs;
 
+
+#[derive(Debug)]
 pub struct MidiDevice {
-    muid: u32,
+    pub muid: u32,
     device_id: u8,
     version_format: u8,
     device_manufacturer: u32,

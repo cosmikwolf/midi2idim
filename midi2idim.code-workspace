@@ -2,6 +2,9 @@
 	"folders": [
 		{
 			"path": "."
+		},
+		{
+			"path": "../tktest"
 		}
 	],
 	"settings": {
@@ -11,13 +14,20 @@
 			"titleBar.activeForeground": "#FBFBF9"
 		},
 		"cSpell.words": [
+			"bincode",
 			"Bytesin",
 			"cbindgen",
 			"CMIDI",
 			"idim",
 			"LAMESPEC",
+			"midibytes",
+			"NRPNLSB",
+			"NRPNMSB",
+			"Pagee",
 			"pnacc",
-			"pnrcc"
+			"pnrcc",
+			"RPNLSB",
+			"RPNMSB"
 		]
 	}
 }

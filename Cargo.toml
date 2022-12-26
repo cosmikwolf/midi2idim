@@ -2,5 +2,5 @@
 
 members = [
     "midi_ci",
-    "nom-midi-rs",
+    # "nom-midi-rs",
 ]
