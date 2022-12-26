@@ -19,7 +19,7 @@ pub struct MidiDevice {
     receivable_maximum_sysex_message_size: u32,
 }
 
-#[derive(Encode, Decode)]
+#[derive(Encode, Decode, Debug, PartialEq)]
 pub struct MidiCiMessage {
     sysex_start: u8,
     universal_sysex: u8,
@@ -34,16 +34,16 @@ pub struct MidiCiMessage {
 }
 // https://stackoverflow.com/questions/67594909/multiple-possible-types-for-a-serializable-structs-field
 
-#[derive(Encode, Decode)]
+#[derive(Encode, Decode, Debug, PartialEq)]
 pub enum Payload {
     DiscoveryPayload(DiscoveryPayload),
     NakMsgPayload(NakMsgPayload),
 }
 
-#[derive(Encode, Decode)]
+#[derive(Encode, Decode, Debug, PartialEq)]
 pub struct NakMsgPayload;
 
-#[derive(Encode, Decode)]
+#[derive(Encode, Decode, Debug, PartialEq)]
 pub struct CiCategory {
     bit_0_reserved: bool,
     protocol_negotiation_supported: bool,
@@ -67,7 +67,7 @@ impl Default for CiCategory {
         }
     }
 }
-#[derive(Encode, Decode)]
+#[derive(Encode, Decode, Debug, PartialEq)]
 pub struct DiscoveryPayload {
     device_manufacturer: u32,
     device_family: u16,

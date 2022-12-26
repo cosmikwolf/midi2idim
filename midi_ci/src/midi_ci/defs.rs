@@ -29,22 +29,18 @@ pub struct Midi2ProtocolType {
 // pub mod midi {
 
 pub mod midi_ci_msg {
-
     pub const SYSTEM_EXCLUSIVE_START: u8 = 0xF0;
     pub const UNIVERSAL_SYSTEM_EXCLUSIVE: u8 = 0x7E;
     pub const END_UNIVERSAL_SYSTEM_EXCLUSIVE: u8 = 0xF7;
-    // MIDI 2.0 UMP Section 3.
     pub const TYPE_UTILITY: u8 = 0;
     pub const TYPE_SYSTEM: u8 = 1;
     pub const TYPE_MIDI_1_CHANNEL: u8 = 2;
     pub const TYPE_SYSEX7: u8 = 3;
     pub const TYPE_MIDI_2_CHANNEL: u8 = 4;
     pub const TYPE_SYSEX8_MDS: u8 = 5;
-    
     pub const PROTOCOL_BYTES_TYPE: u8 = 1;
     pub const PROTOCOL_BYTES_VERSION: u8 = 2;
     pub const PROTOCOL_BYTES_EXTENSIONS: u8 = 3;
-    
     pub const BROADCAST_MUID: u32 = 0xFFFFFF;
     pub const PROTOCOL_TYPE_MIDI1: u8 = 0x01;
     pub const PROTOCOL_TYPE_MIDI2: u8 = 0x02;

@@ -1,4 +1,5 @@
-pub enum Type {
+#[derive(PartialEq, PartialOrd)]
+pub enum Status {
     InvalidType = 0x00,                     // For notifying errors
     NoteOff = 0x80,                         // Channel Message - Note Off
     NoteOn = 0x90,                          // Channel Message - Note On
@@ -8,21 +9,19 @@ pub enum Type {
     AfterTouchChannel = 0xD0,               // Channel Message - Channel (monophonic) AfterTouch
     PitchBend = 0xE0,                       // Channel Message - Pitch Bend
     SystemExclusive = 0xF0,                 // System Exclusive
-    SystemExclusiveStart = SystemExclusive, // System Exclusive Start
     TimeCodeQuarterFrame = 0xF1,            // System Common - MIDI Time Code Quarter Frame
     SongPosition = 0xF2,                    // System Common - Song Position Pointer
     SongSelect = 0xF3,                      // System Common - Song Select
-    Undefined_F4 = 0xF4,
-    Undefined_F5 = 0xF5,
+    UndefinedF4 = 0xF4,
+    UndefinedF5 = 0xF5,
     TuneRequest = 0xF6,        // System Common - Tune Request
     SystemExclusiveEnd = 0xF7, // System Exclusive End
     Clock = 0xF8,              // System Real Time - Timing Clock
-    Undefined_F9 = 0xF9,
-    Tick = Undefined_F9, // System Real Time - Timing Tick (1 tick = 10 milliseconds)
-    Start = 0xFA,        // System Real Time - Start
-    Continue = 0xFB,     // System Real Time - Continue
-    Stop = 0xFC,         // System Real Time - Stop
-    Undefined_FD = 0xFD,
+    SrtTick = 0xF9, // System Real Time - Timing Tick (1 tick = 10 milliseconds)
+    SrtStart = 0xFA,        // System Real Time - Start
+    SrtContinue = 0xFB,     // System Real Time - Continue
+    SrtStop = 0xFC,         // System Real Time - Stop
+    UndefinedFd = 0xFD,
     ActiveSensing = 0xFE, // System Real Time - Active Sensing
     SystemReset = 0xFF,   // System Real Time - System Reset
     End,
@@ -36,64 +35,64 @@ pub enum ThruMode {
 }
 
 pub enum SubId1 {
-    sample_dump_header = 0x01,
-    sample_data_packet = 0x02,
-    sample_dump_request = 0x03,
-    midi_time_code = 0x04,
-    sample_dump_extensions = 0x05,
-    general_information = 0x06,
-    file_dump = 0x07,
-    midi_tuning_standard = 0x08,
-    general_midi = 0x09,
-    end_of_file = 0x7B,
-    wait = 0x7C,
-    cancel = 0x7D,
-    nak = 0x7E,
-    ack = 0x7F,
+    SampleDumpHeader = 0x01,
+    SampleDataPacket = 0x02,
+    SampleDumpRequest = 0x03,
+    MidiTimeCode = 0x04,
+    SampleDumpExtensions = 0x05,
+    GeneralInformation = 0x06,
+    FileDump = 0x07,
+    MidiTuningStandard = 0x08,
+    GeneralMidi = 0x09,
+    EndOfFile = 0x7B,
+    Wait = 0x7C,
+    Cancel = 0x7D,
+    Nak = 0x7E,
+    Ack = 0x7F,
 }
 
 pub enum MidiTimeCodeSubId2 {
-    special = 0x00,
-    punch_in_points = 0x01,
-    punch_out_points = 0x02,
-    delete_punch_in_point = 0x03,
-    delete_punch_out_point = 0x04,
-    event_start_point = 0x05,
-    event_stop_point = 0x06,
-    event_start_points_with_additional_info = 0x07,
-    event_stop_points_with_additional_info = 0x08,
-    delete_event_start_point = 0x09,
-    delete_event_stop_point = 0x0A,
-    cue_points = 0x0B,
-    cue_points_with_additional_inf = 0x0C,
-    delete_cue_point = 0x0D,
-    event_name_in_additional_info = 0x0E,
+    Special = 0x00,
+    PunchInPoints = 0x01,
+    PunchOutPoints = 0x02,
+    DeletePunchInPoint = 0x03,
+    DeletePunchOutPoint = 0x04,
+    EventStartPoint = 0x05,
+    EventStopPoint = 0x06,
+    EventStartPointsWithAdditionalInfo = 0x07,
+    EventStopPointsWithAdditionalInfo = 0x08,
+    DeleteEventStartPoint = 0x09,
+    DeleteEventStopPoint = 0x0A,
+    CuePoints = 0x0B,
+    CuePointsWithAdditionalInf = 0x0C,
+    DeleteCuePoint = 0x0D,
+    EventNameInAdditionalInfo = 0x0E,
 }
 
 pub enum SampleDumpExtensionsSubId2 {
-    multiple_loop_points = 0x01,
-    loop_points_request = 0x02,
+    MultipleLoopPoints = 0x01,
+    LoopPointsRequest = 0x02,
 }
 
 pub enum GeneralInformationSubId2 {
-    identity_request = 0x01,
-    identity_reply = 0x02,
+    IdentityRequest = 0x01,
+    IdentityReply = 0x02,
 }
 
 pub enum FileDumpSubId2 {
-    header = 0x01,
-    data_packet = 0x02,
-    request = 0x03,
+    Header = 0x01,
+    DataPacket = 0x02,
+    Request = 0x03,
 }
 
 pub enum MidiTuningStandardSubId2 {
-    bulk_dump_request = 0x00,
-    bulk_dump_reply = 0x01,
+    BulkDumpRequest = 0x00,
+    BulkDumpReply = 0x01,
 }
 
 pub enum GeneralMidiSubId2 {
-    general_midi_system_on = 0x01,
-    general_midi_system_off = 0x02,
+    GeneralMidiSystemOn = 0x01,
+    GeneralMidiSystemOff = 0x02,
 }
 /* brief Enumeration of Control Change command numbers.
 See the detailed controllers numbers & description here:
@@ -180,14 +179,64 @@ pub enum CC {
     PolyModeOn = 127,
 }
 
-pub enum RegisteredParameterNumbers {
-    PitchBendSensitivity = 0x0000 as u16,
-    ChannelFineTuning = 0x0001 as u16,
-    ChannelCoarseTuning = 0x0002 as u16,
-    SelectTuningProgram = 0x0003 as u16,
-    SelectTuningBank = 0x0004 as u16,
-    ModulationDepthRange = 0x0005 as u16,
-    NullFunction = (0x7f << 7) + 0x7f as u16,
-}
+// pub enum RegisteredParameterNumbers {
+//     PitchBendSensitivity = 0x0000u16,
+//     ChannelFineTuning = 0x0001u16,
+//     ChannelCoarseTuning = 0x0002u16,
+//     SelectTuningProgram = 0x0003u16,
+//     SelectTuningBank = 0x0004u16,
+//     ModulationDepthRange = 0x0005u16,
+//     NullFunction = (0x7f << 7) + 0x7f,
+// }
 
-pub fn generate_midi_10_message() {}
+// pub struct DataBytes {
+    
+// }
+// pub struct MidiMessage<'a> {
+//     status: u8,
+//     data: &'a [u8],
+// }
+// fn extract_message_data<'a>(i: &'a [u8], t: &'a [u8]) -> IResult<&'a [u8], &'a [u8]> {
+//     Ok((i, t))
+// }
+
+
+// fn detect_midi_start(i: &[u8]) -> IResult<&[u8], &[u8]> {
+//     tag(&[sysex_start])(i)
+// }
+
+// fn extract_status_byte<'a>(i: &'a [u8], o: &'a [u8]) -> IResult<&'a [u8], u8> {
+//     Ok((i, o[0]))
+// }
+
+// extern crate nom;
+// use nom::{
+//     // bytes::complete::tag;
+//     bits::{bits, bytes},
+//     bytes::streaming::{tag, take_until, take},
+//     IResult
+// };
+// let mut parser = delimited(tag("("), tag("abc"), tag(")"));
+
+
+// const sysex_start:u8 = 0xF7;
+// const sysex_end_arr: &[u8] = &[0xF7];
+// const sysex_end: u8 = 0xF7;
+
+// const end: &[u8] = &[sysex_end];
+
+// fn parse_midi_message( i: &[u8] ) -> IResult<&[u8], (&[u8], &[u8])> {
+//     bits::<_, _, Error<(&[u8], usize)>, _, _> map_res(
+//         tag(&[sysex_start]),
+//         take_until::<&[u8], &[u8], Err::Error>(end),
+//     )(i)
+//     // let (i, _) = tag(&[sysex_start])(i)?;
+
+//     // let (i, o) = take(1u8)(i)?;
+//     // let (i, status) = extract_status_byte(i, o)?;
+//     // let end: &[u8] = &[sysex_end]; 
+//     // let (i, t) = take_until((&[u8])&[sysex_end])(i)?;
+//     // let (i, b) = extract_message_data(i, t)?;
+
+//     // return Ok((i, MidiMessage { status:status[0], data:&[0xFF]}));
+// }
