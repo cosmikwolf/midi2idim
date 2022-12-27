@@ -1,3 +1,4 @@
+#[allow(dead_code)]
 pub mod midi_2_msg {
     pub const MIDI_2_STATUS_NOTE_OFF: u8 = 0x80;
     pub const MIDI_2_STATUS_NOTE_ON: u8 = 0x90;
@@ -135,4 +136,3 @@ pub mod midi_2_msg {
     pub const MIDI_2_JR_TIMESTAMP: u8 = 0x20;
 }
 
-pub fn generate_midi_10_message() {}

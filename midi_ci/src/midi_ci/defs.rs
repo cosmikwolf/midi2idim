@@ -27,8 +27,8 @@ pub struct Midi2ProtocolType {
 //     }
 // }
 // pub mod midi {
-
-pub mod midi_ci_msg {
+pub struct MidiCi;
+impl MidiCi {
     pub const SYSTEM_EXCLUSIVE_START: u8 = 0xF0;
     pub const UNIVERSAL_SYSTEM_EXCLUSIVE: u8 = 0x7E;
     pub const END_UNIVERSAL_SYSTEM_EXCLUSIVE: u8 = 0xF7;
@@ -41,7 +41,7 @@ pub mod midi_ci_msg {
     pub const PROTOCOL_BYTES_TYPE: u8 = 1;
     pub const PROTOCOL_BYTES_VERSION: u8 = 2;
     pub const PROTOCOL_BYTES_EXTENSIONS: u8 = 3;
-    pub const BROADCAST_MUID: u32 = 0xFFFFFF;
+    pub const BROADCAST_MUID: u32 = 0xFFFFFFF;
     pub const PROTOCOL_TYPE_MIDI1: u8 = 0x01;
     pub const PROTOCOL_TYPE_MIDI2: u8 = 0x02;
     pub const PROTOCOL_EXTENSIONS_JITTER: u8 = 1;
@@ -79,4 +79,9 @@ pub mod midi_ci_msg {
     pub const PROFILE_CONFIGURATION_SUPPORTED: u8 = 4;
     pub const PROPERTY_EXCHANGE_SUPPORTED: u8 = 8;
     pub const MIDI_CI_VERSION_1_1: u8 = 0x01;
+
+    //https://dev-doc.rust-lang.org/beta/edition-guide/rust-2018/trait-system/associated-constants.html
+    pub fn to_seven_bit_msg() {
+        
+    }
 }

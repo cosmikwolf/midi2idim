@@ -1,8 +1,8 @@
 // M2-101-UM MIDI Capabilities Inquiry (MIDI-CI)
 #[allow(dead_code)]
 pub mod midi_ci;
-mod midi_2;
-pub mod midi_1;
+mod midiv2;
+pub mod midiv1;
 
 // pub use midi_ci::discovery;
 

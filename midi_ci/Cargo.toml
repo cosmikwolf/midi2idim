@@ -10,6 +10,7 @@ bus = "2.3.0"
 rand = "0.8.5"
 bincode = "2.0.0-rc.2"
 nom = "7.1.1"
+serde = "1.0.151"
 
 [build-dependencies]
 cbindgen = "0.24.3"

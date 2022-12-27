@@ -1,16 +1,17 @@
-pub mod parser;
 pub mod decode;
+pub mod parser;
+
+use serde::{Deserialize, Serialize};
 // use hex_string_decode;
-use crate::midi_ci::defs::midi_ci_msg::*;
-use bincode::{Decode, Encode, config};
+use crate::midi_ci::defs::MidiCi;
+use bincode::{config, Decode, Encode};
 use rand::{thread_rng, Rng};
 pub mod defs;
-
 
 #[derive(Debug)]
 pub struct MidiDevice {
     pub muid: u32,
-    device_id: u8,
+    pub device_id: u8,
     version_format: u8,
     device_manufacturer: u32,
     device_family: u16,
@@ -19,31 +20,93 @@ pub struct MidiDevice {
     receivable_maximum_sysex_message_size: u32,
 }
 
+pub fn u32_to_u7lsb(input: u32) -> [u8;4] {
+    let nib1 = input & 0x7f;
+    let nib2 = (input & (0x7f << 7) ) << 1;
+    let nib3 = (input & (0x7f << 14)) << 2;
+    let nib4 = (input & (0x7f << 21)) << 3;
+    (nib1 + nib2 + nib3 + nib4).to_le_bytes()
+}
+
+pub fn u16_to_u7lsb(input: u16) -> [u8;2] {
+    let nib1 = input & 0x7f;
+    let nib2 = (input & (0x7f << 7))>>7;
+    [nib1 as u8, nib2 as u8]
+}
+
 #[derive(Encode, Decode, Debug, PartialEq)]
 pub struct MidiCiMessage {
-    sysex_start: u8,
-    universal_sysex: u8,
+    status_byte: u8,
+    sysex_id: u8,
     device_id: u8,
     sysex_sub_id_1: u8,
     sysex_sub_id_2: u8,
     version_format: u8,
     source_muid: u32,
     destination_muid: u32,
-    data: Payload,
-    sysex_end: u8,
-}
-// https://stackoverflow.com/questions/67594909/multiple-possible-types-for-a-serializable-structs-field
-
-#[derive(Encode, Decode, Debug, PartialEq)]
-pub enum Payload {
-    DiscoveryPayload(DiscoveryPayload),
-    NakMsgPayload(NakMsgPayload),
+    data: Vec<u8>,
 }
 
-#[derive(Encode, Decode, Debug, PartialEq)]
+impl MidiCiMessage {
+    pub fn header(&self) -> [u8;14] {
+        [   self.status_byte,
+            self.sysex_id,
+            self.device_id,
+            self.sysex_sub_id_1,
+            self.sysex_sub_id_2,
+            self.version_format,
+            u32_to_u7lsb(self.source_muid)[0],
+            u32_to_u7lsb(self.source_muid)[1],
+            u32_to_u7lsb(self.source_muid)[2],
+            u32_to_u7lsb(self.source_muid)[3],
+            u32_to_u7lsb(self.destination_muid)[0],
+            u32_to_u7lsb(self.destination_muid)[1],
+            u32_to_u7lsb(self.destination_muid)[2],
+            u32_to_u7lsb(self.destination_muid)[3] ]
+    }
+    pub fn serialize(&self) -> Vec<u8> {
+        // https://stackoverflow.com/questions/40792801/best-way-to-concatenate-vectors-in-rust
+        self.header().to_vec().iter().cloned().chain(self.data.iter().cloned()).collect() // Cloned
+    }
+}
+// struct Payload {
+//     fn parse_data(self: &Self, data: &[u8]) -> Self;
+// }
+// impl Payload for GenericPayload {
+//     fn parse_data(data: &[u8]) -> Self {
+//         GenericPayload {
+//             data: data.to_vec()
+//         }
+//     }
+//  }
+#[derive(Encode, Decode, Debug, PartialEq, Serialize, Deserialize)]
+pub struct GenericPayload {
+    data: Vec<u8>,
+
+}
+
+impl GenericPayload {
+    pub fn new(&self, data:Vec<u8>) -> Self {
+        GenericPayload {
+            data
+        }
+    }
+    pub fn to_vec(&self) -> Vec<u8> {
+        use core::mem::size_of;
+        let config = bincode::config::standard()
+            .with_big_endian()
+            .with_fixed_int_encoding()
+            .write_fixed_array_length();
+        let mut slice: [u8; size_of::<Self>()] =
+            [0u8; size_of::<Self>()];
+        bincode::encode_into_slice(&self, &mut slice, config).unwrap();
+        slice.to_vec()
+    }
+}
+#[derive(Encode, Decode, Debug, PartialEq, Serialize, Deserialize)]
 pub struct NakMsgPayload;
 
-#[derive(Encode, Decode, Debug, PartialEq)]
+#[derive(Encode, Decode, Debug, PartialEq, Serialize, Deserialize)]
 pub struct CiCategory {
     bit_0_reserved: bool,
     protocol_negotiation_supported: bool,
@@ -58,7 +121,7 @@ impl Default for CiCategory {
     fn default() -> CiCategory {
         CiCategory {
             bit_0_reserved: false,
-            protocol_negotiation_supported: false,
+            protocol_negotiation_supported: true,
             profile_configuration_supported: false,
             property_exchange_supported: false,
             bit_5_reserved: false,
@@ -67,8 +130,16 @@ impl Default for CiCategory {
         }
     }
 }
-#[derive(Encode, Decode, Debug, PartialEq)]
-pub struct DiscoveryPayload {
+
+impl CiCategory {
+    fn serialize(&self) -> u8 {
+        (1 & self.protocol_negotiation_supported as u8) << 1
+        + (1 & self.profile_configuration_supported as u8) << 2 
+        + (1 & self.property_exchange_supported as u8) << 3 
+    }
+}
+#[derive(Encode, Decode, Debug, PartialEq, Serialize, Deserialize)]
+pub struct DiscoveryMessagePayload {
     device_manufacturer: u32,
     device_family: u16,
     device_family_model: u16,
@@ -77,9 +148,9 @@ pub struct DiscoveryPayload {
     receivable_maximum_sysex_message_size: u32,
 }
 
-impl DiscoveryPayload {
+impl DiscoveryMessagePayload {
     pub fn new(device: &MidiDevice, ci_category: CiCategory) -> Self {
-        DiscoveryPayload {
+        DiscoveryMessagePayload {
             device_manufacturer: device.device_manufacturer,
             device_family: device.device_family,
             device_family_model: device.device_family_model,
@@ -87,6 +158,26 @@ impl DiscoveryPayload {
             capability_inquiry_category_supported: ci_category,
             receivable_maximum_sysex_message_size: device.receivable_maximum_sysex_message_size,
         }
+    }
+    pub fn serialize(&self) -> [u8;17] {
+        [   u32_to_u7lsb(self.device_manufacturer)[0],
+            u32_to_u7lsb(self.device_manufacturer)[1],
+            u32_to_u7lsb(self.device_manufacturer)[2],
+            u32_to_u7lsb(self.device_manufacturer)[3],
+            u16_to_u7lsb(self.device_family)[0],
+            u16_to_u7lsb(self.device_family)[1],
+            u16_to_u7lsb(self.device_family_model)[0],
+            u16_to_u7lsb(self.device_family_model)[1],
+            u32_to_u7lsb(self.software_revision_level)[0],
+            u32_to_u7lsb(self.software_revision_level)[1],
+            u32_to_u7lsb(self.software_revision_level)[2],
+            u32_to_u7lsb(self.software_revision_level)[3],
+            self.capability_inquiry_category_supported.serialize(),
+            u32_to_u7lsb(self.receivable_maximum_sysex_message_size)[0],
+            u32_to_u7lsb(self.receivable_maximum_sysex_message_size)[1],
+            u32_to_u7lsb(self.receivable_maximum_sysex_message_size)[2],
+            u32_to_u7lsb(self.receivable_maximum_sysex_message_size)[3]
+        ]
     }
 }
 
@@ -103,28 +194,26 @@ impl MidiCiMessage {
         version_format: u8,
         source_muid: u32,
         destination_muid: u32,
-        data: Payload,
+        data: Vec<u8>,
     ) -> Self {
         return MidiCiMessage {
-            sysex_start: SYSTEM_EXCLUSIVE_START,
-            universal_sysex: UNIVERSAL_SYSTEM_EXCLUSIVE,
+            status_byte: MidiCi::SYSTEM_EXCLUSIVE_START,
+            sysex_id: MidiCi::UNIVERSAL_SYSTEM_EXCLUSIVE,
             device_id,
-            sysex_sub_id_1: SUB_ID_1_MIDI_CI,
+            sysex_sub_id_1: MidiCi::SUB_ID_1_MIDI_CI,
             sysex_sub_id_2,
             version_format,
             source_muid,
             destination_muid,
             data,
-            sysex_end: END_UNIVERSAL_SYSTEM_EXCLUSIVE,
         };
-
     }
 }
 trait MidiCodec {
     fn encode(&self) -> Vec<u8>;
     // fn decode(&mut self, midibytes: Vec<u8>) -> MidiCiMessage;
 }
-impl MidiCodec for MidiCiMessage{
+impl MidiCodec for MidiCiMessage {
     fn encode(&self) -> Vec<u8> {
         let config = config::standard()
         // // pick one of:
@@ -166,7 +255,7 @@ impl MidiDevice {
         &self,
         sysex_sub_id_2: u8,
         destination_muid: u32,
-        data: Payload,
+        data: Vec<u8>,
     ) -> MidiCiMessage {
         return MidiCiMessage::new(
             self.device_id,
@@ -182,11 +271,11 @@ impl MidiDevice {
     pub fn build_discovery_inquiry_message(&self) -> MidiCiMessage {
         let mut ci_category: CiCategory = CiCategory::default();
         ci_category.protocol_negotiation_supported = true;
-        let data = DiscoveryPayload::new(self, ci_category);
+        let data = DiscoveryMessagePayload::new(self, ci_category);
         return self.build_midi_ci_msg(
-            SUB_ID_2_DISCOVERY_INQUIRY,
-            BROADCAST_MUID,
-            Payload::DiscoveryPayload(data),
+            MidiCi::SUB_ID_2_DISCOVERY_INQUIRY,
+            MidiCi::BROADCAST_MUID,
+            data.serialize().to_vec(),
         );
     }
 }
